@@ -18,7 +18,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 	UPROPERTY(EditAnywhere)
-	float Velocity = 20.0f;
+	float Speed = 100.0f;
 	UPROPERTY(EditAnywhere, meta = (MakeEditWidget=true))
 	FVector TargetLocation;
+
+private:
+	FVector GlobalTargetLocation;
+	FVector GlobalStartLocation;
 };
