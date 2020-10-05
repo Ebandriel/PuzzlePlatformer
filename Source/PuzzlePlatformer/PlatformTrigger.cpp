@@ -4,6 +4,8 @@
 #include "PlatformTrigger.h"
 #include "Components/BoxComponent.h"
 
+#include "MovingPlatform.h"
+
 // Sets default values
 APlatformTrigger::APlatformTrigger()
 {
@@ -20,6 +22,7 @@ void APlatformTrigger::BeginPlay()
 {
 	Super::BeginPlay();
 	TriggerVolume->OnComponentBeginOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapBegin);
+	TriggerVolume->OnComponentEndOverlap.AddDynamic(this, &APlatformTrigger::OnOverlapEnd);
 }
 
 // Called every frame
@@ -36,6 +39,16 @@ void APlatformTrigger::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent,
 	bool bFromSweep,
 	const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Plate Activated"));
+	for(AMovingPlatform * Platform : TriggeredPlatforms)
+	{
+		Platform->AddActiveTrigger();
+	}
 }
 
+void APlatformTrigger::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	for (AMovingPlatform* Platform : TriggeredPlatforms)
+	{
+		Platform->RemoveActiveTrigger();
+	}
+}
